@@ -17,30 +17,30 @@ defmodule One do
     |> Enum.map(&String.to_integer/1)
   end
 
-  defp find_two([a | rest]) do
-    find_two(a, rest)
-  end
-  defp find_two(a, [b | rest] = list) do
-    case Enum.find(list, fn n -> a + n == 2020 end) do
-      nil -> find_two(b, rest)
-      n -> a * n
+  defp find_two(list) do
+    li = Enum.with_index(list)
+    for {a, ai} <- li,
+        {b, bi} <- li,
+        ai < bi,
+        a + b == 2020
+    do
+      a * b
     end
+    |> List.first()
   end
 
-  defp find_three([a, b | c]) do
-    find_three([a, b | c], [b | c], c)
-  end
-  defp find_three(a, [_, b | c], []) do
-    find_three(a, [b | c], c)
-  end
-  defp find_three([_ | rest], [_], []) do
-    find_three(rest)
-  end
-  defp find_three([na | _] = a, [nb | _] = b, [_ | rest] = c) do
-    case Enum.find(c, fn n -> na + nb + n == 2020 end) do
-      nil -> find_three(a, b, rest)
-      n -> na * nb * n
+  defp find_three(list) do
+    li = Enum.with_index(list)
+    for {a, ai} <- li,
+        {b, bi} <- li,
+        {c, ci} <- li,
+        ai < bi,
+        bi < ci,
+        a + b + c == 2020
+    do
+      a * b * c
     end
+    |> List.first()
   end
 end
 

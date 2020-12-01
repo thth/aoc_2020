@@ -10,12 +10,12 @@ TwentyOne TwentyTwo TwentyThree TwentyFour TwentyFive]
   content =
     """
     defmodule #{word} do
-      def one(input) do
+      def part_one(input) do
         input
         |> parse()
       end
 
-      def two(input) do
+      def part_two(input) do
         input
         |> parse()
       end
@@ -29,12 +29,15 @@ TwentyOne TwentyTwo TwentyThree TwentyFour TwentyFive]
 
     input = File.read!("input/#{day}.txt")
 
-    #{word}.one(input)
+    #{word}.part_one(input)
     |> IO.inspect()
 
-    #{word}.two(input)
+    #{word}.part_two(input)
     |> IO.inspect()
     """
+
   File.touch("input/#{day}.txt")
+
+  # [:exclusive] so does not overwrite if existing
   File.write("#{day}.exs", content, [:exclusive])
 end)

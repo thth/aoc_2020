@@ -1,11 +1,11 @@
 defmodule One do
-  def one(input) do
+  def part_one(input) do
     input
     |> parse()
     |> find_two()
   end
 
-  def two(input) do
+  def part_two(input) do
     input
     |> parse()
     |> find_three()
@@ -46,8 +46,8 @@ end
 
 input = File.read!("input/01.txt")
 
-One.one(input)
+One.part_one(input)
 |> IO.inspect()
 
-One.two(input)
+One.part_two(input)
 |> IO.inspect()

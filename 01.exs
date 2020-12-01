@@ -11,8 +11,8 @@ defmodule One do
     |> find_three()
   end
 
-  defp parse(txt) do
-    txt
+  defp parse(text) do
+    text
     |> String.split("\n")
     |> Enum.map(&String.to_integer/1)
   end

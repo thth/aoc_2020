@@ -14,9 +14,8 @@ defmodule Two do
     input
     |> parse()
     |> Enum.count(fn {a, b, letter, pass} ->
-      graphemes = String.graphemes(pass)
-      a? = Enum.at(graphemes, a - 1) == letter
-      b? = Enum.at(graphemes, b - 1) == letter
+      a? = String.at(pass, a - 1) == letter
+      b? = String.at(pass, b - 1) == letter
       :erlang.xor(a?, b?)
     end)
   end

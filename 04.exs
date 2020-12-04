@@ -32,24 +32,17 @@ defmodule Four do
     Enum.all?(@fields, &valid?(&1, creds[&1]))
   end
 
-  defp valid?(field, year) when field in ~w[byr iyr eyr] do
-    case {field, Integer.parse(year)} do
-      {"byr", {byr, ""}} -> byr >= 1920 and byr <= 2002
-      {"iyr", {iyr, ""}} -> iyr >= 2010 and iyr <= 2020
-      {"eyr", {eyr, ""}} -> eyr >= 2020 and eyr <= 2030
-      _ -> false
-    end
-  end
-  defp valid?("hgt", hgt) do
-    case Integer.parse(hgt) do
-      {h, "cm"} -> h >= 150 and h <= 193
-      {h, "in"} -> h >= 59 and h <= 76
-      _ -> false
-    end
-  end
+  defp valid?(field, value) when field in ~w[byr iyr eyr hgt] and is_binary(value), do:
+    valid?(field, Integer.parse(value))
+  defp valid?("byr", {byr, ""}), do: byr >= 1920 and byr <= 2002
+  defp valid?("iyr", {iyr, ""}), do: iyr >= 2010 and iyr <= 2020
+  defp valid?("eyr", {eyr, ""}), do: eyr >= 2020 and eyr <= 2030
+  defp valid?("hgt", {hgt, "cm"}), do: hgt >= 150 and hgt <= 193
+  defp valid?("hgt", {hgt, "in"}), do: hgt >= 59 and hgt <= 76
   defp valid?("hcl", hcl), do: hcl =~ ~r/#[0-9a-f]{6}/
   defp valid?("ecl", ecl), do: ecl in ~w[amb blu brn gry grn hzl oth]
   defp valid?("pid", pid), do: pid =~ ~r/^\d{9}$/
+  defp valid?(_, _), do: false
 end
 
 input = File.read!("input/04.txt")

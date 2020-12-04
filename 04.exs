@@ -1,4 +1,5 @@
 defmodule Four do
+  @fields ~w[byr iyr eyr hgt hcl ecl pid]
   def part_one(input) do
     input
     |> parse()
@@ -22,55 +23,33 @@ defmodule Four do
   end
 
   defp fields_present?(creds) do
-    required = MapSet.new(~w[byr iyr eyr hgt hcl ecl pid])
+    required = MapSet.new(@fields)
     creds = creds |> Map.keys() |> MapSet.new()
     MapSet.subset?(required, creds)
   end
 
   defp fields_valid?(creds) do
-    with byr <- creds["byr"],
-         byr <- (byr =~ ~r/^\d{4}$/) && String.to_integer(byr),
-         true <- byr >= 1920 and byr <= 2002,
-         # iyr
-         iyr <- creds["iyr"],
-         iyr <- (iyr =~ ~r/^\d{4}$/) && String.to_integer(iyr),
-         true <- iyr >= 2010 and iyr <= 2020,
-         # eyr
-         eyr <- creds["eyr"],
-         eyr <- (eyr =~ ~r/^\d{4}$/) && String.to_integer(eyr),
-         true <- eyr >= 2020 and eyr <= 2030,
-         # hgt
-         hgt <- creds["hgt"],
-         true <- hgt_valid?(hgt),
-         #hcl
-         hcl <- creds["hcl"],
-         true <- (hcl =~ ~r/#[0-9a-f]{6}/),
-         # ecl
-         ecl <- creds["ecl"],
-         true <- ecl in ~w[amb blu brn gry grn hzl oth],
-         # pid
-         pid <- creds["pid"],
-         true <- (pid =~ ~r/^\d{9}$/)
-    do
-      true
-    else
-      _err -> false
-    end
+    Enum.all?(@fields, &valid?(&1, creds[&1]))
   end
 
-  defp hgt_valid?(hgt) do
-    with [_, height, unit] <- Regex.run(~r/^(\d+)(\w+)$/, hgt),
-         h <- String.to_integer(height)
-    do
-      case unit do
-        "cm" -> h >= 150 and h <= 193
-        "in" -> h >= 59 and h <= 76
-        _ -> false
-      end
-    else
+  defp valid?(field, year) when field in ~w[byr iyr eyr] do
+    case {field, Integer.parse(year)} do
+      {"byr", {byr, ""}} -> byr >= 1920 and byr <= 2002
+      {"iyr", {iyr, ""}} -> iyr >= 2010 and iyr <= 2020
+      {"eyr", {eyr, ""}} -> eyr >= 2020 and eyr <= 2030
       _ -> false
     end
   end
+  defp valid?("hgt", hgt) do
+    case Integer.parse(hgt) do
+      {h, "cm"} -> h >= 150 and h <= 193
+      {h, "in"} -> h >= 59 and h <= 76
+      _ -> false
+    end
+  end
+  defp valid?("hcl", hcl), do: hcl =~ ~r/#[0-9a-f]{6}/
+  defp valid?("ecl", ecl), do: ecl in ~w[amb blu brn gry grn hzl oth]
+  defp valid?("pid", pid), do: pid =~ ~r/^\d{9}$/
 end
 
 input = File.read!("input/04.txt")

@@ -17,11 +17,7 @@ defmodule Four do
   defp parse(text) do
     text
     |> String.split("\n\n")
-    |> Enum.map(&String.replace(&1, "\n", " "))
-    |> Enum.map(fn str ->
-      regex = ~r/(\w+):(\S+)/
-      Regex.scan(regex, String.replace(str, "\n", " "), capture: :all_but_first)
-    end)
+    |> Enum.map(&Regex.scan(~r/(\w+):(\S+)/, &1, capture: :all_but_first))
     |> Enum.map(&Enum.into(&1, %{}, fn [k, v] -> {k, v} end))
   end
 
@@ -63,8 +59,7 @@ defmodule Four do
   end
 
   defp hgt_valid?(hgt) do
-    regex = ~r/^(\d+)(\w+)$/i
-    with [_, height, unit] <- Regex.run(regex, hgt),
+    with [_, height, unit] <- Regex.run(~r/^(\d+)(\w+)$/, hgt),
          h <- String.to_integer(height)
     do
       case unit do

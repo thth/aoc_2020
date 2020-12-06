@@ -47,8 +47,10 @@ end
 
 input = File.read!("input/04.txt")
 
-Four.part_one(input)
+input
+|> Four.part_one()
 |> IO.inspect()
 
-Four.part_two(input)
+input
+|> Four.part_two()
 |> IO.inspect()

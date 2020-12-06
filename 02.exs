@@ -36,8 +36,10 @@ end
 
 input = File.read!("input/02.txt")
 
-Two.part_one(input)
+input
+|> Two.part_one()
 |> IO.inspect()
 
-Two.part_two(input)
+input
+|> Two.part_two()
 |> IO.inspect()

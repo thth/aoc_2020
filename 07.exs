@@ -2,17 +2,8 @@ defmodule Seven do
   def part_one(input) do
     bag_map = parse(input)
 
-    bag_map
-    |> Enum.reduce({MapSet.new(), MapSet.new()}, fn {outer, _inners}, {contains, not_contains} ->
-      if contains_shiny_gold?(outer, bag_map, contains, not_contains) do
-        {MapSet.put(contains, outer), not_contains}
-      else
-        {contains, MapSet.put(not_contains, outer)}
-      end
-    end)
-    |> elem(0)
-    |> MapSet.delete("shiny gold")
-    |> MapSet.size()
+    list_outers_containing("shiny gold", bag_map)
+    |> length()
   end
 
   def part_two(input) do
@@ -33,22 +24,23 @@ defmodule Seven do
     end)
   end
 
-  defp contains_shiny_gold?(outer, bag_map, contains, not_contains) when is_binary(outer),
-    do: contains_shiny_gold?([outer], bag_map, contains, not_contains)
-  defp contains_shiny_gold?([], _, _, _), do: false
-  defp contains_shiny_gold?(["shiny gold" | _rest], _, _, _), do: true
-  defp contains_shiny_gold?([outer | rest], bag_map, contains, not_contains) do
-    cond do
-      MapSet.member?(contains, outer) -> true
-      MapSet.member?(not_contains, outer) ->
-        contains_shiny_gold?(rest, bag_map, contains, not_contains)
-      true ->
-        to_check =
-          bag_map
-          |> Map.fetch!(outer)
-          |> Enum.map(fn {_n, bag} -> bag end)
-        contains_shiny_gold?(to_check ++ rest, bag_map, contains, not_contains)
-    end
+  defp list_outers_containing(base_inner, bag_map) do
+    outers = list_bags_containing(base_inner, bag_map)
+    list_outers(outers, bag_map, [])
+  end
+
+  defp list_bags_containing(bag, bag_map) do
+    bag_map
+    |> Enum.filter(fn {_outer, inners} ->
+      Enum.any?(inners, fn {_n, inner} -> inner == bag end)
+    end)
+    |> Enum.map(fn {outer, _inners} -> outer end)
+  end
+
+  defp list_outers([], _, seen), do: Enum.uniq(seen)
+  defp list_outers([bag | rest], bag_map, seen) do
+    additional_to_check = list_bags_containing(bag, bag_map) -- seen
+    list_outers(additional_to_check ++ rest, bag_map, [bag | seen])
   end
 
   defp count_inner_bags({n, outer}, bag_map) do
@@ -60,7 +52,8 @@ defmodule Seven do
   defp count_bags([], _, count), do: count
   defp count_bags([{n, outer} | rest], bag_map, count) do
     case Map.fetch!(bag_map, outer) do
-      [] -> count_bags(rest, bag_map, count + n)
+      [] ->
+        count_bags(rest, bag_map, count + n)
       inners ->
         multiples = Enum.map(inners, fn {inner_n, inner} -> {inner_n * n, inner} end)
         count_bags(multiples ++ rest, bag_map, count + n)

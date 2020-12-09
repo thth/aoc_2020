@@ -19,24 +19,24 @@ defmodule Nine do
     |> Enum.map(&String.to_integer/1)
   end
 
-  defp find_invalid([_ | rest] = list) do
+  defp find_invalid(list) do
     target = Enum.at(list, 25)
     pool = Enum.slice(list, 0..24)
     possible_sums = for n <- pool, m <- pool -- [n], do: n + m
-    if target in possible_sums
-      find_invalid(rest)
+    if target in possible_sums do
+      find_invalid(tl(list))
     else
       target
     end
   end
 
-  defp find_contiguous(list, target, i \\ 0)
-  defp find_contiguous([_ | rest] = list, target, i) do
+  defp find_contiguous(list, target, i \\ 0) do
     slice = Enum.slice(list, 0..i)
     case Enum.sum(slice) do
       ^target -> slice
-      n when n > target -> find_contiguous(rest, target, 0)
-      _ -> find_contiguous(list, target, i + 1)
+      sum when sum > target -> find_contiguous(tl(list), target, i - 1)
+      # when sum < target
+      _sum -> find_contiguous(list, target, i + 1)
     end
   end
 end

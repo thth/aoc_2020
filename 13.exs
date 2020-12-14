@@ -12,18 +12,19 @@ defmodule Thirteen do
     :application.start(:inets)
 
     query =
-      parse_two(input)
+      input
+      |> parse_two()
       |> Enum.map(fn {mod, n} -> "(t + #{n}) mod #{mod} = 0" end)
       |> Enum.join(", ")
       |> URI.encode_www_form()
-    url = "http://api.wolframalpha.com/v2/query?output=json"
+    url = "https://api.wolframalpha.com/v2/query?output=json"
       <> "&appid=#{wolframalpha_api_key}"
       <> "&input=#{query}"
       <> "&podtitle=Integer%20solution"
 
     with {:ok, {_, _, body_charlist}} <- :httpc.request(url),
          body <- List.to_string(body_charlist),
-         [_, answer] <- Regex.run(~r/t = \d+ n \+ (\d+)/, body) do
+         [_, answer] <- Regex.run(~r/"plaintext":"t = \d+ n \+ (\d+)/, body) do
       String.to_integer(answer)
     else
       nil -> "oh no"

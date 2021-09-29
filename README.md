@@ -1,4 +1,4 @@
-elixir solutions for advent of code 2020
+elixir solutions for advent of code 2020.
 
 * [2015](https://github.com/thth/aoc_2015) (elixir)
 * [2017](https://github.com/thth/aoc_2017) (elixir)

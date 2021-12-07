@@ -1,9 +1,10 @@
 elixir solutions for advent of code 2020
 
-* [2015](https://github.com/thth/aoc_2015) (elixir)
-* [2017](https://github.com/thth/aoc_2017) (elixir)
-* [2019](https://github.com/thth/aoc_2019) (elixir)
-* __2020__ (elixir)
-* [2021](https://github.com/thth/aoc_2021) (elixir)
+* [2015](https://github.com/thth/aoc_2015)
+* [2016](https://github.com/thth/aoc_2016)
+* [2017](https://github.com/thth/aoc_2017)
+* [2019](https://github.com/thth/aoc_2019)
+* __2020__
+* [2021](https://github.com/thth/aoc_2021)
 
 ![do_your_best_beam](https://user-images.githubusercontent.com/7574985/100570274-42577880-3285-11eb-8218-ca650d622239.png)
